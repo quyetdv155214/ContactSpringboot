@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
+import com.websystique.dao.SQLiteManager;
 import com.websystique.springboot.model.Contact;
 
 
@@ -16,9 +17,9 @@ public class ContactDAO {
 
 	private static List<Contact> listContact = new ArrayList<>();
 
-	static {
-		initContact();
-	}
+//	static {
+//		initContact();
+//	}
 	
 	// dummy data
 	
@@ -52,34 +53,34 @@ public class ContactDAO {
 
 	public Contact addContact(Contact contact) {
 
-//		String sql = "INSERT INTO [dbo].[Contact] ([id] ,[fullName] ,[phoneNumber]  ,[email]  ,[address])  VALUES (?,?,?,?,?)";
-//		PreparedStatement stm = null;
-//		Connection connection = null;
-//
-//		try {
-//			connection = DBContext.getInstance().getConnection();
-//			stm = connection.prepareStatement(sql);
-//			
-//			stm.setString(1, contact.getId());
-//			stm.setString(2, contact.getFullName());
-//			stm.setString(3, contact.getPhoneNumber());
-//			stm.setString(4, contact.getEmail());
-//			stm.setString(5, contact.getAddress());
-//			
-//			stm.executeQuery();
-//			return contact;
-//		} catch (Exception ex) {
-//			ex.printStackTrace();
-//		} finally {
-//			if (connection != null) {
-//				try {
-//					connection.close();
-//				} catch (SQLException ex) {
-//				}
-//			}
-//		}
-//
-		listContact.add(contact);
+		String sql = "INSERT INTO [dbo].[Contact] ([id] ,[fullName] ,[phoneNumber]  ,[email]  ,[address])  VALUES (?,?,?,?,?)";
+		PreparedStatement stm = null;
+		Connection connection = null;
+
+		try {
+			connection = new SQLiteManager().getNewConnection();
+			stm = connection.prepareStatement(sql);
+			
+			stm.setString(1, contact.getId());
+			stm.setString(2, contact.getFullName());
+			stm.setString(3, contact.getPhoneNumber());
+			stm.setString(4, contact.getEmail());
+			stm.setString(5, contact.getAddress());
+			
+			stm.executeQuery();
+			return contact;
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		} finally {
+			if (connection != null) {
+				try {
+					connection.close();
+				} catch (SQLException ex) {
+				}
+			}
+		}
+
+//		listContact.add(contact);
 		
 		return contact;
 	}

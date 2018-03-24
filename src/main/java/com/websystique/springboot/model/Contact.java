@@ -22,6 +22,10 @@ public class Contact {
 	}
 
 	
+	public Contact(int contactId2, String cid, String cfullName, String cphoneNumber, String cemail, String caddress) {
+		// TODO Auto-generated constructor stub
+	}
+
 	public int getContactId() {
 		return contactId;
 	}
