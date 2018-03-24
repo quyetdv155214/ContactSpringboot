@@ -62,8 +62,8 @@ public class ContactController {
             method = RequestMethod.DELETE, //
             produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
     @ResponseBody
-    public Contact deleteContact(@PathVariable("contactid") String contactid) {
-        return contactDAO.deleteContact(contactid);
+    public void deleteContact(@PathVariable("contactid") String contactid) {
+        contactDAO.deleteContact(contactid);
     }
 	
 	// detete list 

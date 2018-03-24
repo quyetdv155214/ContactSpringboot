@@ -15,6 +15,9 @@ public class Account {
 		this.id = id;
 		this.password = password;
 	}
+	
+	public Account() {
+	}
 	public String getId() {
 		return id;
 	}
@@ -33,6 +36,12 @@ public class Account {
 	public void setToken(String token) {
 		this.token = token;
 	}
+	@Override
+	public String toString() {
+		return "Account [id=" + id + ", password=" + password + ", token=" + token + "]";
+	}
+	
+	
 	
 	
 	

@@ -79,7 +79,9 @@ public class ContactDAO {
 //			}
 //		}
 //
-		return null;
+		listContact.add(contact);
+		
+		return contact;
 	}
 
 	public Contact deleteContact(String id) {
