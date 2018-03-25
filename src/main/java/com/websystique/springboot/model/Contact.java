@@ -16,6 +16,7 @@ public class Contact {
 		this.email = email;
 		this.address = address;
 	}
+	
 
 	public Contact() {
 
@@ -23,7 +24,12 @@ public class Contact {
 
 	
 	public Contact(int contactId2, String cid, String cfullName, String cphoneNumber, String cemail, String caddress) {
-		// TODO Auto-generated constructor stub
+		this.contactId = contactId2;
+		this.id = cid;
+		this.fullName = cfullName;
+		this.phoneNumber = cphoneNumber;
+		this.email = cemail;
+		this.address = caddress;
 	}
 
 	public int getContactId() {

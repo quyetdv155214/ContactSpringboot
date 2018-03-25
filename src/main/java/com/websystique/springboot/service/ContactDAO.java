@@ -2,11 +2,16 @@ package com.websystique.springboot.service;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.springframework.stereotype.Repository;
+import org.sqlite.SQLiteConnection;
 
 import com.websystique.dao.SQLiteManager;
 import com.websystique.springboot.model.Contact;
@@ -16,6 +21,8 @@ import com.websystique.springboot.model.Contact;
 public class ContactDAO {
 
 	private static List<Contact> listContact = new ArrayList<>();
+	
+	private Connection conn;
 
 //	static {
 //		initContact();
@@ -37,67 +44,197 @@ public class ContactDAO {
 		listContact.add(c5);
 		listContact.add(c6);
 
-	}
+	}// mở postman tét rhoi
 
-	public List<Contact> getContactById(String userID) {
-		List<Contact> result = new ArrayList<>();
-
-		for (Contact contact : listContact) {
-			if (contact.getId().equalsIgnoreCase(userID)) {
-				result.add(contact);
-			}
-
+	public List<Contact> getContactById(String userID)  {
+		if(conn ==null) {
+			conn = new SQLiteManager().getNewConnection();
 		}
-		return result;
+		List<Contact> list = new ArrayList<>();
+		try {
+	        Statement state =conn.createStatement();
+	        ResultSet rs = state.executeQuery("SELECT * FROM Contact WHERE id =" + "'" + userID + "'");
+	        while (rs.next()) {
+	            int contactId = rs.getInt("contactID");
+	            String cid = rs.getString("id");
+	            String cfullName = rs.getString("fullName");
+	            String cphoneNumber = rs.getString("phoneNumber");
+	            String cemail = rs.getString("email");
+	            String caddress = rs.getString("address");
+	            Contact contact = new Contact(contactId, cid, cfullName, cphoneNumber, cemail, caddress);
+	            list.add(contact);
+	        }
+	        return list;
+		} catch(SQLException ex) {
+			Logger.getLogger(SQLiteManager.class.getName()).log(Level.SEVERE, null, ex);
+			return list;
+		}finally {
+			if(conn != null ) {
+        		try {
+					conn.close();
+					conn = null;
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+        	}
+		}
 	}
 
 	public Contact addContact(Contact contact) {
-
-		String sql = "INSERT INTO [dbo].[Contact] ([id] ,[fullName] ,[phoneNumber]  ,[email]  ,[address])  VALUES (?,?,?,?,?)";
-		PreparedStatement stm = null;
-		Connection connection = null;
-
-		try {
-			connection = new SQLiteManager().getNewConnection();
-			stm = connection.prepareStatement(sql);
-			
-			stm.setString(1, contact.getId());
-			stm.setString(2, contact.getFullName());
-			stm.setString(3, contact.getPhoneNumber());
-			stm.setString(4, contact.getEmail());
-			stm.setString(5, contact.getAddress());
-			
-			stm.executeQuery();
-			return contact;
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		} finally {
-			if (connection != null) {
-				try {
-					connection.close();
-				} catch (SQLException ex) {
+		if (conn == null) {
+            conn = new SQLiteManager().getNewConnection();
+        }
+        try {
+                PreparedStatement pre2 = conn.prepareStatement("INSERT INTO Contact values(?,?,?,?,?,?)");
+                pre2.setString(2, contact.getId());
+                pre2.setString(3, contact.getFullName());
+                pre2.setString(4, contact.getPhoneNumber());
+                pre2.setString(5, contact.getEmail());
+                pre2.setString(6, contact.getAddress());
+                pre2.execute();
+                return contact;
+        } catch (SQLException ex) {
+            Logger.getLogger(SQLiteManager.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }finally {
+        	if(conn != null ) {
+        		try {
+					conn.close();
+					conn = null;
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block lai xem
+					e.printStackTrace();
 				}
-			}
-		}
-
-//		listContact.add(contact);
-		
-		return contact;
+        	}
+        }
 	}
 
-	public Contact deleteContact(String id) {
-		// TODO Auto-generated method stub
-		return null;
+	public Contact deleteContact(int id) {
+		if (conn == null) {
+            conn = new SQLiteManager().getNewConnection();
+        }
+        try {
+        	 PreparedStatement pre = conn.prepareStatement("DELETE FROM Contact "
+                     + "WHERE contactID = ?");
+             pre.setInt(1, id);
+             pre.execute();
+             return new Contact("deleted","deleted","deleted","deleted","deleted");
+        } catch (SQLException ex) {
+            Logger.getLogger(SQLiteManager.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }finally {
+        	if(conn != null ) {
+        		try {
+					conn.close();
+					conn = null;
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+        	}
+        }
 	}
 
-	public List<Contact> editContact(Contact contact) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	public Contact editContact(Contact contact) {
+		if (conn == null) {
+            conn = new SQLiteManager().getNewConnection();
+        }
+        try {
+                PreparedStatement pre = conn.prepareStatement("UPDATE Contact SET "
+                        + "fullName = ? ,"
+                        + "phoneNumber = ?,"
+                        + "email = ?,"
+                        + "address = ? "
+                        + "WHERE contactID = ?");
+                pre.setString(1, contact.getFullName());
+                pre.setString(2, contact.getPhoneNumber());
+                pre.setString(3, contact.getEmail());
+                pre.setString(4, contact.getAddress());
+                pre.setInt(5, contact.getContactId());
+                pre.execute();
+                return contact;
+        } catch (SQLException ex) {
+            Logger.getLogger(SQLiteManager.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }finally {
+        	if(conn != null ) {
+        		try {
+					conn.close();
+					conn = null;
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+        	}
+        }
+	}/// .xml để ra xml nhá, .json thi ra json, mac dinh la json
+	// delele post man dau?
 
 	public List<Contact> deleteListContact(String[] id) {
-		// TODO Auto-generated method stub
-		return null;
+		if (conn == null) {
+            conn = new SQLiteManager().getNewConnection();
+        }
+		List<Contact> list  = new ArrayList<>();
+        try {
+        	for(int i=0; i<id.length;i++) {
+        		PreparedStatement pre = conn.prepareStatement("DELETE FROM Contact "
+                        + "WHERE contactID = ?");
+                pre.setInt(1, Integer.parseInt(id[i]));
+                pre.execute();
+                list.add(new Contact(Integer.parseInt(id[i]),"deleted","deleted","deleted","deleted","deleted"));
+        	}
+            return list;
+        } catch (SQLException ex) {
+            Logger.getLogger(SQLiteManager.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }finally {
+        	if(conn != null ) {
+        		try {
+					conn.close();
+					conn = null;
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+        	}
+        }
+	}
+
+	public List<Contact> addListContact(Contact[] contacts) {
+		if (conn == null) {
+            conn = new SQLiteManager().getNewConnection();
+        }
+		List<Contact> list = new ArrayList<>();
+        try {
+        	
+        	for(int i=0;i< contacts.length;i++) {
+        		Contact contact = contacts[i];
+        		PreparedStatement pre2 = conn.prepareStatement("INSERT INTO Contact values(?,?,?,?,?,?)");
+                pre2.setString(2, contact.getId());
+                pre2.setString(3, contact.getFullName());
+                pre2.setString(4, contact.getPhoneNumber());
+                pre2.setString(5, contact.getEmail());
+                pre2.setString(6, contact.getAddress());
+                pre2.execute();
+                
+                list.add(contact);
+        	}
+        	return list;
+        } catch (SQLException ex) {
+            Logger.getLogger(SQLiteManager.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }finally {
+        	if(conn != null ) {
+        		try {
+					conn.close();
+					conn = null;
+				} catch (SQLException e) {
+				
+					e.printStackTrace();
+				}
+        	}
+        }
 	}
 
 }

@@ -45,6 +45,7 @@ public class SQLiteManager {
         if (conn == null) {
             getConnection();
         }
+        // viết theo id cơ, mấy hàm kia n khác mà,với cả t k lấy được caisn connection o đây ra class kí để gọi
         String id = "";
         Statement state = conn.createStatement();
         ResultSet rs = state.executeQuery("SELECT id FROM Account WHERE token =" + "'" + token + "'");
@@ -141,7 +142,7 @@ public class SQLiteManager {
             return false;
         }
     }
-
+    // nếu vậy thì làm sao mà tạo đc database?
     public boolean registerAccount(String id, String password) {
         if (conn == null) {
             getConnection();
@@ -189,11 +190,15 @@ public class SQLiteManager {
         }
 
     }
+    // hàm nay copy giong hệt chỉ là return ra conn thôi, mà k được à, để sang kia g
+    // do cai connection n time out roi, n ma n k null, voi lai n k chay lai cai ham khoi tao
     public Connection getNewConnection() {
-    	Connection conn = null;
+//    	Connection conn = null;
     	  try {
+    		  /// t biet roi
+    		  //
               Class.forName("org.sqlite.JDBC");
-              conn = DriverManager.getConnection("jdbc:sqlite:SQLiteTest22.db");
+              conn = DriverManager.getConnection("jdbc:sqlite:SQLite.db");
               System.out.println(conn.toString());
               initilase();
           } catch (ClassNotFoundException ex) {
@@ -203,7 +208,8 @@ public class SQLiteManager {
           }
     	  return conn;
     }
-
+    //nó phải gọi được hàm này thì mới tạo đc db chứ
+    //lại xem
     private void initilase() throws SQLException {
         if (!hasData) {
             hasData = true;

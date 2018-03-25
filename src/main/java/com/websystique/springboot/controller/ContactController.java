@@ -53,27 +53,35 @@ public class ContactController {
             method = RequestMethod.PUT, //
             produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
     @ResponseBody
-    public List<Contact> editContact(@RequestBody Contact contact) {
+    public Contact editContact(@RequestBody Contact contact) {
         return contactDAO.editContact(contact);
     }
-	
-	//detete
+		//detete
 	@RequestMapping(value = "/contact/{contactid}", //
             method = RequestMethod.DELETE, //
             produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
     @ResponseBody
     public void deleteContact(@PathVariable("contactid") String contactid) {
-        contactDAO.deleteContact(contactid);
-    }
+        contactDAO.deleteContact(Integer.parseInt(contactid));
+    }	
+	// m thêm hộ t cái edit list được k, vc edit lit, được
 	
 	// detete list 
 	
-	@RequestMapping(value = "/contact/batchdelete", //
+	@RequestMapping(value = "/contact/batchdelete", //m test thử xem
             method = RequestMethod.POST, //
             produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
     @ResponseBody
     public List<Contact> deleteListContact(@RequestBody String id[]) {
         return contactDAO.deleteListContact(id);
+    }
+	
+	@RequestMapping(value = "/contact/addlist", //m test thử xem
+            method = RequestMethod.POST, //
+            produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
+    @ResponseBody
+    public List<Contact> addListContact(@RequestBody Contact contacts[] ) {
+        return contactDAO.addListContact(contacts);
     }
 	
 }
