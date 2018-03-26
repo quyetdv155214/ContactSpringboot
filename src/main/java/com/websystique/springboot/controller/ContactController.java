@@ -61,8 +61,8 @@ public class ContactController {
             method = RequestMethod.DELETE, //
             produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
     @ResponseBody
-    public void deleteContact(@PathVariable("contactid") String contactid) {
-        contactDAO.deleteContact(Integer.parseInt(contactid));
+    public Contact deleteContact(@PathVariable("contactid") String contactid) {
+        return contactDAO.deleteContact(Integer.parseInt(contactid));
     }	
 	// m thêm hộ t cái edit list được k, vc edit lit, được
 	
